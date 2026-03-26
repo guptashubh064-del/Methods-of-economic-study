@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Methods of Economic Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #13131c;
+    --deductive: #f97316;
+    --inductive: #22d3ee;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --border: #22223a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(249,115,22,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(34,211,238,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .hero {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(249,115,22,0.12);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--deductive);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #fff 30%, var(--muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .tab-btn {
+    padding: 10px 24px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+  }
+
+  .tab-btn:hover { border-color: #444466; color: var(--text); }
+  .tab-btn.active-d { border-color: var(--deductive); color: var(--deductive); background: rgba(249,115,22,0.08); }
+  .tab-btn.active-i { border-color: var(--inductive); color: var(--inductive); background: rgba(34,211,238,0.08); }
+  .tab-btn.active-c { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeUp 0.4s ease both; }
+  .section.visible { display: block; }
+
+  /* INTRO CARDS */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) { .intro-grid { grid-template-columns: 1fr; } }
+
+  .method-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px;
+    border: 1.5px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .method-card:hover { transform: translateY(-4px); }
+  .method-card.deductive { border-color: rgba(249,115,22,0.25); }
+  .method-card.deductive:hover { border-color: var(--deductive); }
+  .method-card.inductive { border-color: rgba(34,211,238,0.25); }
+  .method-card.inductive:hover { border-color: var(--inductive); }
+
+  .method-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+  }
+  .method-card.deductive::before { background: var(--deductive); }
+  .method-card.inductive::before { background: var(--inductive); }
+
+  .method-icon {
+    font-size: 36px;
+    margin-bottom: 14px;
+  }
+
+  .method-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .deductive .method-name { color: var(--deductive); }
+  .inductive .method-name { color: var(--inductive); }
+
+  .method-aka {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+    font-style: italic;
+  }
+
+  .method-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #bbbbd0;
+  }
+
+  /* ANALOGY BOX */
+  .analogy-box {
+    background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(34,211,238,0.05));
+    border: 1.5px solid rgba(167,139,250,0.2);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+
+  .analogy-box h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #a78bfa;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .analogy-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .analogy-item {
+    flex: 1;
+    min-width: 200px;
+    padding: 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+  }
+
+  .analogy-item .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .analogy-item.d .label { color: var(--deductive); }
+  .analogy-item.i .label { color: var(--inductive); }
+  .analogy-item p { font-size: 14px; color: #bbbbd0; line-height: 1.6; }
+
+  /* STEPS */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) { .steps-grid { grid-template-columns: 1fr; } }
+
+  .steps-col h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .steps-col.d h3 { color: var(--deductive); border-bottom-color: rgba(249,115,22,0.3); }
+  .steps-col.i h3 { color: var(--inductive); border-bottom-color: rgba(34,211,238,0.3); }
+
+  .step-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .d .step-num { background: rgba(249,115,22,0.15); color: var(--deductive); }
+  .i .step-num { background: rgba(34,211,238,0.15); color: var(--inductive); }
+
+  .step-item p { font-size: 14px; color: #bbbbd0; line-height: 1.6; }
+  .step-item strong { color: var(--text); font-weight: 500; }
+
+  /* MERIT/DEMERIT */
+  .merit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) { .merit-grid { grid-template-columns: 1fr; } }
+
+  .merit-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 22px;
+    border: 1.5px solid var(--border);
+  }
+
+  .merit-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .merit-list { list-style: none; }
+  .merit-list li {
+    font-size: 13.5px;
+    color: #bbbbd0;
+    line-height: 1.6;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .merit-list li:last-child { border-bottom: none; }
+  .merit-list li span { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+  /* HISTORY */
+  .history-timeline { margin-bottom: 32px; }
+  .tl-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .tl-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tl-dot::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: calc(100% + 16px);
+    background: var(--border);
+  }
+
+  .tl-item:last-child .tl-dot::after { display: none; }
+  .tl-dot.d { background: var(--deductive); box-shadow: 0 0 0 4px rgba(249,115,22,0.15); }
+  .tl-dot.i { background: var(--inductive); box-shadow: 0 0 0 4px rgba(34,211,238,0.15); }
+
+  .tl-content { flex: 1; }
+  .tl-era {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .tl-era.d { color: var(--deductive); }
+  .tl-era.i { color: var(--inductive); }
+
+  .tl-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .tl-content p { font-size: 13.5px; color: #bbbbd0; line-height: 1.6; }
+
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 24px; }
+
+  .comp-table thead tr th {
+    background: var(--card);
+    padding: 14px 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comp-table thead th:nth-child(2) { color: var(--deductive); }
+  .comp-table thead th:nth-child(3) { color: var(--inductive); }
+  .comp-table thead th:first-child { color: var(--muted); border-radius: 12px 0 0 0; }
+  .comp-table thead th:last-child { border-radius: 0 12px 0 0; }
+
+  .comp-table tbody tr {
+    transition: background 0.2s;
+  }
+
+  .comp-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .comp-table tbody td {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #bbbbd0;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .comp-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .comp-table tbody tr:last-child td:first-child { border-radius: 0 0 0 12px; }
+  .comp-table tbody tr:last-child td:last-child { border-radius: 0 0 12px 0; }
+
+  /* SECTION TITLE */
+  .sec-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sec-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 20px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--deductive), var(--inductive));
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    background: var(--card);
+    border-radius: 16px;
+    margin-bottom: 32px;
+    border: 1.5px solid var(--border);
+  }
+
+  .flow-box {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .flow-box.d { background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3); color: var(--deductive); }
+  .flow-box.i { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.3); color: var(--inductive); }
+  .flow-arrow { color: var(--muted); font-size: 18px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="tag">Economics — BBA Sem 2</div>
+    <h1>Methods of<br/>Economic Study</h1>
+    <p>Two big ways economists figure out how the world works — explained simply, like you're 10.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active-d" onclick="showTab('overview', this, 'active-d')">🔍 Overview</button>
+    <button class="tab-btn" onclick="showTab('history', this, 'active-i')">📜 History</button>
+    <button class="tab-btn" onclick="showTab('steps', this, 'active-d')">🪜 Steps / Process</button>
+    <button class="tab-btn" onclick="showTab('merits', this, 'active-i')">⚖️ Merits & Demerits</button>
+    <button class="tab-btn" onclick="showTab('compare', this, 'active-c')">🆚 Differences</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="section visible">
+    <div class="intro-grid">
+      <div class="method-card deductive">
+        <div class="method-icon">🧠</div>
+        <div class="method-name">Deductive Method</div>
+        <div class="method-aka">Also called: Analytical Method / Abstract Method / A Priori Method</div>
+        <p>You start with a <strong>general rule</strong> that you already know or assume is true — then you apply it to specific cases to draw conclusions.<br/><br/>Think of it like: <em>"I already have the answer in my head. Let me see if the real world matches it."</em></p>
+      </div>
+      <div class="method-card inductive">
+        <div class="method-icon">🔬</div>
+        <div class="method-name">Inductive Method</div>
+        <div class="method-aka">Also called: Historical Method / Empirical Method / A Posteriori Method</div>
+        <p>You start by <strong>observing many real-life examples</strong> and collecting facts — then you build a general rule from those observations.<br/><br/>Think of it like: <em>"I don't know the answer yet. Let me look at the world first and figure it out."</em></p>
+      </div>
+    </div>
+
+    <!-- ANALOGY -->
+    <div class="analogy-box">
+      <h3>🎯 Simple Analogy — Detective Style</h3>
+      <div class="analogy-row">
+        <div class="analogy-item d">
+          <div class="label">🧠 Deductive</div>
+          <p>Sherlock Holmes says: <em>"All criminals leave footprints. There are footprints here. Therefore, a criminal was here."</em> He started with a rule and applied it.</p>
+        </div>
+        <div class="analogy-item i">
+          <div class="label">🔬 Inductive</div>
+          <p>A detective visits 100 crime scenes, notices footprints in 95 of them, and then concludes: <em>"Criminals usually leave footprints."</em> He built the rule from observations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLOW DIAGRAMS -->
+    <div class="sec-title">How Each Method Flows</div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">🟠 Deductive (Top → Down)</p>
+    <div class="flow">
+      <div class="flow-box d">General Theory / Assumption</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box d">Build a Hypothesis</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box d">Apply Logic / Reasoning</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box d">Verify with Facts</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box d">Conclusion</div>
+    </div>
+
+    <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">🔵 Inductive (Bottom → Up)</p>
+    <div class="flow">
+      <div class="flow-box i">Observe Real-World Facts</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box i">Classify & Analyze Data</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box i">Generalize / Find Patterns</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box i">Form a General Law</div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" class="section">
+    <div class="sec-title">History of Both Methods</div>
+    <div class="history-timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot d"></div>
+        <div class="tl-content">
+          <div class="tl-era d">Ancient Greece — 300s BC</div>
+          <h4>Roots of Deductive Thinking — Aristotle</h4>
+          <p>The great Greek philosopher Aristotle developed the concept of <em>deductive reasoning</em>. He believed you could reach truth by starting from known principles and reasoning logically — without always needing experiments. This became the foundation for the deductive method.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot d"></div>
+        <div class="tl-content">
+          <div class="tl-era d">1700s — The Classical Economists</div>
+          <h4>Adam Smith, Ricardo, and the Deductive Era</h4>
+          <p>Economists like <strong>Adam Smith</strong> (Wealth of Nations, 1776) and <strong>David Ricardo</strong> used deductive reasoning heavily. They created theories about supply, demand, wages, and rent by <em>thinking logically</em> from assumed human behaviour — without tons of data collection. Ricardo especially built abstract economic models from general assumptions.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot i"></div>
+        <div class="tl-content">
+          <div class="tl-era i">1600s — Francis Bacon</div>
+          <h4>Father of the Inductive Method</h4>
+          <p><strong>Francis Bacon</strong>, the English philosopher, challenged Aristotle's pure reasoning. He said: <em>"Don't just think — observe!"</em> He promoted gathering real-world data and building conclusions from it. This was a revolution in scientific thinking and became the backbone of the inductive method.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot i"></div>
+        <div class="tl-content">
+          <div class="tl-era i">1800s — The Historical / German School</div>
+          <h4>Roscher, Hildebrand & the Inductive Economists</h4>
+          <p>German economists like <strong>Wilhelm Roscher</strong> and <strong>Bruno Hildebrand</strong> strongly opposed abstract theories. They believed economics must be based on <em>historical facts and real data</em>. This "Historical School" pushed the inductive method into mainstream economic thought.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot d"></div>
+        <div class="tl-content">
+          <div class="tl-era d">Late 1800s — Alfred Marshall</div>
+          <h4>The Great Synthesis</h4>
+          <p><strong>Alfred Marshall</strong>, one of the greatest economists, argued that <em>neither method alone is enough</em>. He said both deductive and inductive methods should be used together — like two blades of a scissors. Modern economics largely follows this combined approach.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div id="steps" class="section">
+    <div class="sec-title">Steps / Process in Each Method</div>
+    <div class="steps-grid">
+      <div class="steps-col d">
+        <h3>🟠 Deductive Method — Steps</h3>
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <p><strong>Lay Down Assumptions</strong> — The economist starts with basic assumptions about human behaviour. E.g., "People always try to earn maximum profit."</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <p><strong>Build a Hypothesis</strong> — Based on assumptions, a hypothesis (a testable idea) is created. E.g., "If wages rise, workers will work more hours."</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <p><strong>Apply Logic / Reasoning</strong> — Using mathematics or pure logic, the hypothesis is developed into a theory without actually going out to collect data.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <p><strong>Verify with Real Data</strong> — Finally, the conclusion is tested against real-world facts to check if the theory holds true.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <p><strong>Establish Economic Laws</strong> — If verified, the hypothesis becomes an economic law or principle that can be applied broadly.</p>
+        </div>
+      </div>
+
+      <div class="steps-col i">
+        <h3>🔵 Inductive Method — Steps</h3>
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <p><strong>Observation of Facts</strong> — The economist first observes and collects facts from the real world through surveys, experiments, or historical records.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <p><strong>Classification of Data</strong> — The collected facts are sorted, arranged, and classified into meaningful categories for easy analysis.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <p><strong>Analysis and Generalization</strong> — Patterns are spotted in the data and a general conclusion is drawn. E.g., "In every observed case, prices rose when supply fell."</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <p><strong>Formulation of a Law</strong> — The generalization becomes an economic law. E.g., "Law of Supply: As price rises, supply also rises."</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <p><strong>Verification</strong> — The law is tested again with new observations to confirm it works across different cases and time periods.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERITS & DEMERITS -->
+  <div id="merits" class="section">
+    <div class="sec-title">Merits & Demerits</div>
+    <div class="merit-grid">
+      <!-- DEDUCTIVE MERITS -->
+      <div class="merit-card">
+        <h4 style="color: var(--deductive);">✅ Merits of Deductive</h4>
+        <ul class="merit-list">
+          <li><span>💡</span> Simple and easy — doesn't require tons of data collection. Pure logic is enough.</li>
+          <li><span>⚡</span> Quick to use — forming theories is faster when you start from general principles.</li>
+          <li><span>🔭</span> Helpful in complex topics — where collecting real data is nearly impossible.</li>
+          <li><span>📐</span> Precise and systematic — because it uses mathematical logic and reasoning.</li>
+          <li><span>🌍</span> Universal laws — conclusions often apply broadly across different economies.</li>
+        </ul>
+      </div>
+
+      <!-- DEDUCTIVE DEMERITS -->
+      <div class="merit-card">
+        <h4 style="color: #f87171;">❌ Demerits of Deductive</h4>
+        <ul class="merit-list">
+          <li><span>🚫</span> Based on assumptions — if assumptions are wrong, the whole theory collapses.</li>
+          <li><span>🏔️</span> Ignores real-world complexity — human behaviour is not always logical or predictable.</li>
+          <li><span>📊</span> No statistical proof — conclusions are not backed by actual data or statistics.</li>
+          <li><span>🔒</span> Narrow scope — abstract theories may not apply to all real situations.</li>
+          <li><span>⚠️</span> Risk of error — incorrect premises lead to incorrect economic laws.</li>
+        </ul>
+      </div>
+
+      <!-- INDUCTIVE MERITS -->
+      <div class="merit-card">
+        <h4 style="color: var(--inductive);">✅ Merits of Inductive</h4>
+        <ul class="merit-list">
+          <li><span>🌱</span> Based on real facts — conclusions come from actual observations, not guesses.</li>
+          <li><span>📈</span> More realistic — it accounts for actual human behaviour and real-world conditions.</li>
+          <li><span>🔍</span> Statistical support — uses data to back up claims, making them verifiable.</li>
+          <li><span>🧪</span> Scientific approach — similar to how natural sciences work, making it credible.</li>
+          <li><span>🔄</span> Dynamic — can be updated as new facts come in, making laws flexible.</li>
+        </ul>
+      </div>
+
+      <!-- INDUCTIVE DEMERITS -->
+      <div class="merit-card">
+        <h4 style="color: #f87171;">❌ Demerits of Inductive</h4>
+        <ul class="merit-list">
+          <li><span>⏳</span> Very time-consuming — collecting and analysing large amounts of data takes huge effort.</li>
+          <li><span>💸</span> Expensive — surveys, fieldwork, and data analysis require money and resources.</li>
+          <li><span>🎭</span> Risk of bias — the researcher's personal views may affect how data is collected or interpreted.</li>
+          <li><span>🔢</span> Requires experts — statistical analysis needs trained professionals; not everyone can do it.</li>
+          <li><span>📉</span> Limited generalization — conclusions from one place/time may not apply everywhere.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div id="compare" class="section">
+    <div class="sec-title">Key Differences at a Glance</div>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Basis</th>
+            <th>🟠 Deductive Method</th>
+            <th>🔵 Inductive Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Starting Point</td>
+            <td>Starts from a general rule or assumption</td>
+            <td>Starts from real-world observations and facts</td>
+          </tr>
+          <tr>
+            <td>Direction of Reasoning</td>
+            <td>General → Specific (Top to Bottom)</td>
+            <td>Specific → General (Bottom to Top)</td>
+          </tr>
+          <tr>
+            <td>Nature</td>
+            <td>Abstract / Theoretical</td>
+            <td>Realistic / Practical</td>
+          </tr>
+          <tr>
+            <td>Data Required</td>
+            <td>No real data needed — logic is used</td>
+            <td>Large amounts of real-world data required</td>
+          </tr>
+          <tr>
+            <td>Speed</td>
+            <td>Faster — no data collection needed</td>
+            <td>Slower — needs observation and research</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>Low — armchair reasoning</td>
+            <td>High — surveys, fieldwork, research</td>
+          </tr>
+          <tr>
+            <td>Pioneers</td>
+            <td>Aristotle, Adam Smith, David Ricardo</td>
+            <td>Francis Bacon, Roscher, German Historical School</td>
+          </tr>
+          <tr>
+            <td>Risk</td>
+            <td>Wrong if assumptions are unrealistic</td>
+            <td>Risk of bias in data collection</td>
+          </tr>
+          <tr>
+            <td>Also Called</td>
+            <td>Analytical / Abstract / A Priori</td>
+            <td>Historical / Empirical / A Posteriori</td>
+          </tr>
+          <tr>
+            <td>Best Used When</td>
+            <td>Data is hard to get; theory building</td>
+            <td>Real behaviour needs to be studied; policy making</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="analogy-box" style="margin-top: 24px;">
+      <h3>🏆 Which is Better?</h3>
+      <div class="analogy-row">
+        <div class="analogy-item" style="background: rgba(255,255,255,0.04);">
+          <p style="color: #d4d4ee; font-size: 14px; line-height: 1.7;">
+            Neither method alone is perfect. <strong style="color:#a78bfa;">Alfred Marshall</strong> said it best: both methods are like the <em>two blades of a scissors</em> — you need both to cut properly. Modern economists use a <strong style="color:#a78bfa;">combined approach</strong> — they build theories using deduction and then verify them using inductive, real-world data. This is called the <strong style="color:#a78bfa;">Hypothetico-Deductive Method</strong> in modern economics.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Made for Shubh Gupta · BBA Sem 2 · St. Paul Institute, Indore</div>
+</div>
+
+<script>
+  function showTab(id, btn, activeClass) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+    document.getElementById(id).classList.add('visible');
+    btn.classList.add(activeClass);
+  }
+</script>
+</body>
+</html>
